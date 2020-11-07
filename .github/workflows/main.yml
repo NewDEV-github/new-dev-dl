@@ -59,7 +59,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          zip -r build-x11-32.zip $GITHUB_WORKSPACE/build/build-x11-32
+          zip -r build-x11-32.zip build/build-x11-32
           zip -r build-x11-64.zip build/build-x11-64
       - name: Get current date
         id: date
