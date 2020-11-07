@@ -24,4 +24,5 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: ./godot_headless.64
+        run: ./godot_headless.64 discord-bot/project.godot --script res://src/Main.gd
+
