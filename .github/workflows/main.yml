@@ -38,26 +38,8 @@ jobs:
     # Location of Godot project in repository
          projectDir: discord-bot
     # Whether or not to use `--export-debug`
-      - name: Build for 64bit linux
-  # You may pin to the exact commit or the version.
-  # uses: josephbmanley/build-godot-action@5206884b2f984e37d89c07e535590129a29eb182
-        uses: josephbmanley/build-godot-action@v1.4.0
-        with:
-    # Name of the exported binary
-         name: export
-    # Name of the preset in `export_presets.cfg` to use
-         preset: x11-64
-    # Optional name of the subdirectory to put exported project in
-         subdirectory: build-x11-64
-    # Set true to output an artifact zip file
-         #package: # optional
-    # Location of Godot project in repository
-         projectDir: discord-bot
-    # Whether or not to use `--export-debug`
-      - name: Zip Releases
-        run: |
-          zip -r build-x11-32.zip build-x11-32
-          zip -r build-x11-64.zip build-x11-64
+      - name: Zip Release
+        run: zip -r build-x11-32.zip build-x11-32
       - name: Upload linux 32bit release
         id: create_release
         uses: actions/create-release@v1
