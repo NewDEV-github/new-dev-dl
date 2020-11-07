@@ -6,10 +6,12 @@ name: CI
 # events but only for the master branch
 on:
   push:
+    tags:
+      - '*'
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
+  
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -46,8 +48,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: $(git rev-parse --short "$GITHUB_SHA")
-          release_name: Release $(git rev-parse --short "$GITHUB_SHA")
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
           draft: false
           prerelease: true
       - name: Upload Release Asset
