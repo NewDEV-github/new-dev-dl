@@ -27,8 +27,14 @@ jobs:
           mkdir builds
           cd builds
           mkdir x11_32
+          cd ../
           ./godot_headless.64 discord-bot/project.godot --export x11-32 builds/x11_32/discordbot.32
           zip -r x11_32.zip x11_32
+          cd builds
+          mkdir x11_64
+          cd ../
+          ./godot_headless.64 discord-bot/project.godot --export x11-64 builds/x11_64/discordbot.64
+          zip -r x11_64.zip x11_64
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
