@@ -40,18 +40,23 @@ jobs:
     # Location of Godot project in repository
          projectDir: discord-bot
     # Whether or not to use `--export-debug`
-      - name: Zip Release
-        run: zip -r build-x11-32.zip . -i build-x11-32
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      - name: Checkout branch "master"
+        uses: actions/checkout@v2
+        with:
+          ref: 'master'
+      - name: Release snapshot
+        id: release-snapshot
+        uses: actions/create-release@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ steps.date.outputs.date }}
+          release_name: Release from ${{ steps.date.outputs.date }}
           draft: false
-          prerelease: true
+          prerelease: false
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
