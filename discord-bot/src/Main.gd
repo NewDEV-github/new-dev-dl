@@ -1,5 +1,7 @@
-extends HTTPRequest
-
+extends MainLoop
+var http = HTTPRequest.new()
+var InvalidSessionTimer = Timer.new()
+var HeartbeatTimer = Timer.new()
 var token := "NjkxNjE2Nzk1MDAxMzU2Mjg4" + "." + "XnikVQ" + "." + "W1ddy-i6jm_HZEFdACaQp7H5Ps0"
 var client : WebSocketClient
 var heartbeat_interval : float
@@ -9,6 +11,9 @@ var heartbeat_ack_received := true
 var invalid_session_is_resumable : bool
 
 func _ready() -> void:
+	InvalidSessionTimer.one_shot = true
+	InvalidSessionTimer.connect("timeout", self, "_on_InvalidSessionTimer_timeout")
+	HeartbeatTimer.connect("timeout", self, "_on_HeartbeatTimer_timeout")
 	randomize()
 	client = WebSocketClient.new()
 	client.connect_to_url("wss://gateway.discord.gg/?v=6&encoding=json")
@@ -46,14 +51,14 @@ func _data_received() -> void:
 			handle_events(dict)
 		"9": # Opcode 9 Invalid Session
 			invalid_session_is_resumable = dict["d"]
-			$InvalidSessionTimer.one_shot = true
-			$InvalidSessionTimer.wait_time = rand_range(1, 5)
-			$InvalidSessionTimer.start()
+			InvalidSessionTimer.one_shot = true
+			InvalidSessionTimer.wait_time = rand_range(1, 5)
+			InvalidSessionTimer.start()
 		"10": # Opcode 10 Hello
 			# Set our timer
 			heartbeat_interval = dict["d"]["heartbeat_interval"] / 1000
-			$HeartbeatTimer.wait_time = heartbeat_interval
-			$HeartbeatTimer.start()
+			HeartbeatTimer.wait_time = heartbeat_interval
+			HeartbeatTimer.start()
 
 			var d := {}
 			if !session_id:
@@ -100,7 +105,7 @@ func handle_events(dict : Dictionary) -> void:
 			var headers := ["Authorization: Bot %s" % token]
 
 			# Get all channels of the guild
-			request("https://discordapp.com/api/guilds/%s/channels" % guild_id, headers)
+			http.request("https://discordapp.com/api/guilds/%s/channels" % guild_id, headers)
 			var data_received = yield(self, "request_completed") # await
 			var channels = JSON.parse(data_received[3].get_string_from_utf8()).result
 			var channel_id
@@ -114,7 +119,7 @@ func handle_events(dict : Dictionary) -> void:
 				var message_to_send := {"content" : "Welcome %s!" % username}
 				var query := JSON.print(message_to_send)
 				headers.append("Content-Type: application/json")
-				request("https://discordapp.com/api/v6/channels/%s/messages" % channel_id, headers, true, HTTPClient.METHOD_POST, query)
+				http.request("https://discordapp.com/api/v6/channels/%s/messages" % channel_id, headers, true, HTTPClient.METHOD_POST, query)
 		"MESSAGE_CREATE":
 			var channel_id = dict["d"]["channel_id"]
 			var message_content = dict["d"]["content"]
@@ -135,7 +140,7 @@ func handle_events(dict : Dictionary) -> void:
 				var message_to_send := {"content" : "https://github.com/OverloadedOrama"}
 				query = JSON.print(message_to_send)
 			if query:
-				request("https://discordapp.com/api/v6/channels/%s/messages" % channel_id, headers, true, HTTPClient.METHOD_POST, query)
+				http.request("https://discordapp.com/api/v6/channels/%s/messages" % channel_id, headers, true, HTTPClient.METHOD_POST, query)
 
 func _on_InvalidSessionTimer_timeout() -> void:
 	var d := {}
