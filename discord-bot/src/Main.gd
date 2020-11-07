@@ -1,4 +1,4 @@
-extends MainLoop
+extends SceneTree
 var http = HTTPRequest.new()
 var InvalidSessionTimer = Timer.new()
 var HeartbeatTimer = Timer.new()
