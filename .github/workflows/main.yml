@@ -41,7 +41,7 @@ jobs:
          projectDir: discord-bot
     # Whether or not to use `--export-debug`
       - name: ZIP Release
-        run: zip -r build-x11-32 . -i build-x11-32.zip
+        run: zip -r build/build-x11-32/ build-x11-32.zip
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
