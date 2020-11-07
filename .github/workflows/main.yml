@@ -30,7 +30,7 @@ jobs:
         uses: josephbmanley/build-godot-action@v1.4.0
         with:
     # Name of the exported binary
-         name: export
+         name: export.32
     # Name of the preset in `export_presets.cfg` to use
          preset: x11-32
     # Optional name of the subdirectory to put exported project in
@@ -43,10 +43,6 @@ jobs:
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-      - name: Checkout branch "master"
-        uses: actions/checkout@v2
-        with:
-          ref: 'master'
       - name: Release snapshot
         id: release-snapshot
         uses: actions/create-release@latest
