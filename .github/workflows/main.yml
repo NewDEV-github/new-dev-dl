@@ -22,7 +22,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       # Runs a single command using the runners shell
-      - name: Build Godot
+      - name: Build for 32bit linux
   # You may pin to the exact commit or the version.
   # uses: josephbmanley/build-godot-action@5206884b2f984e37d89c07e535590129a29eb182
         uses: josephbmanley/build-godot-action@v1.4.0
@@ -32,15 +32,33 @@ jobs:
     # Name of the preset in `export_presets.cfg` to use
          preset: x11-32
     # Optional name of the subdirectory to put exported project in
-         subdirectory: build
+         subdirectory: build-x11-32
+    # Set true to output an artifact zip file
+         #package: # optional
+    # Location of Godot project in repository
+         projectDir: discord-bot
+    # Whether or not to use `--export-debug`
+      - name: Build for 64bit linux
+  # You may pin to the exact commit or the version.
+  # uses: josephbmanley/build-godot-action@5206884b2f984e37d89c07e535590129a29eb182
+        uses: josephbmanley/build-godot-action@v1.4.0
+        with:
+    # Name of the exported binary
+         name: export
+    # Name of the preset in `export_presets.cfg` to use
+         preset: x11-64
+    # Optional name of the subdirectory to put exported project in
+         subdirectory: build-x11-64
     # Set true to output an artifact zip file
          #package: # optional
     # Location of Godot project in repository
          projectDir: discord-bot
     # Whether or not to use `--export-debug`
       - name: Zip Releases
-        run: zip -r build.zip build
-      - name: Create Release
+        run: |
+          zip -r build-x11-32.zip build-x11-32
+          zip -r build-x11-64.zip build-x11-64
+      - name: Upload linux 32bit release
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -57,8 +75,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ./x11_32.zip
-          asset_name: x11_32.zip
+          asset_path: ./build-x11-32.zip
+          asset_name: build-x11-32.zip
           asset_content_type: application/zip`
         
 
