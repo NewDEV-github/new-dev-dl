@@ -36,10 +36,12 @@ jobs:
     # Optional name of the subdirectory to put exported project in
          subdirectory: build-x11-32
     # Set true to output an artifact zip file
-         #package: # optional
+         package: build-x11-32.zip
     # Location of Godot project in repository
          projectDir: discord-bot
     # Whether or not to use `--export-debug`
+      - name: ZIP Release
+        run: zip -r build-x11-32 . -i build-x11-32_zip.zip
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
@@ -62,6 +64,6 @@ jobs:
           upload_url: ${{ steps.release-snapshot.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
           asset_path: ./build-x11-32.zip
           asset_name: build-x11-32.zip
-          asset_content_type: application/zip`
+          asset_content_type: application/zip
         
 
