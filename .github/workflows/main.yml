@@ -39,7 +39,7 @@ jobs:
          projectDir: discord-bot
     # Whether or not to use `--export-debug`
       - name: Zip Release
-        run: zip -r build-x11-32.zip build-x11-32
+        run: zip -r build-x11-32.zip . -i build-x11-32
       - name: Upload linux 32bit release
         id: create_release
         uses: actions/create-release@v1
