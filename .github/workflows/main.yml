@@ -23,23 +23,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: Build for 64bit linux
-  # You may pin to the exact commit or the version.
-  # uses: josephbmanley/build-godot-action@5206884b2f984e37d89c07e535590129a29eb182
-        uses: josephbmanley/build-godot-action@v1.4.0
-        with:
-    # Name of the exported binary
-         name: export.64
-    # Name of the preset in `export_presets.cfg` to use
-         preset: x11-64
-    # Optional name of the subdirectory to put exported project in
-         subdirectory: build-x11-64
-    # Set true to output an artifact zip file
-         package: false
-    # Location of Godot project in repository
-         projectDir: discord-bot
-      # Runs a single command using the runners shell
-      - name: Build for 32bit linux
+      - name: Build for Linux 32-bit
   # You may pin to the exact commit or the version.
   # uses: josephbmanley/build-godot-action@5206884b2f984e37d89c07e535590129a29eb182
         uses: josephbmanley/build-godot-action@v1.4.0
@@ -54,6 +38,86 @@ jobs:
          package: false
     # Location of Godot project in repository
          projectDir: discord-bot
+      # Runs a single command using the runners shell
+      - name: Build for Linux 64-bit
+  # You may pin to the exact commit or the version.
+  # uses: josephbmanley/build-godot-action@5206884b2f984e37d89c07e535590129a29eb182
+        uses: josephbmanley/build-godot-action@v1.4.0
+        with:
+    # Name of the exported binary
+         name: export.64
+    # Name of the preset in `export_presets.cfg` to use
+         preset: x11-64
+    # Optional name of the subdirectory to put exported project in
+         subdirectory: build-x11-64
+    # Set true to output an artifact zip file
+         package: false
+    # Location of Godot project in repository
+         projectDir: discord-bot
+    # Whether or not to use `--export-debug`
+      - name: Build for Windows 32-bit
+  # You may pin to the exact commit or the version.
+  # uses: josephbmanley/build-godot-action@5206884b2f984e37d89c07e535590129a29eb182
+        uses: josephbmanley/build-godot-action@v1.4.0
+        with:
+    # Name of the exported binary
+         name: export.exe
+    # Name of the preset in `export_presets.cfg` to use
+         preset: win-32
+    # Optional name of the subdirectory to put exported project in
+         subdirectory: build-win-32
+    # Set true to output an artifact zip file
+         package: false
+    # Location of Godot project in repository
+         projectDir: discord-bot
+    # Whether or not to use `--export-debug`
+      - name: Build for Windows 64-bit
+  # You may pin to the exact commit or the version.
+  # uses: josephbmanley/build-godot-action@5206884b2f984e37d89c07e535590129a29eb182
+        uses: josephbmanley/build-godot-action@v1.4.0
+        with:
+    # Name of the exported binary
+         name: export.exe
+    # Name of the preset in `export_presets.cfg` to use
+         preset: win-64
+    # Optional name of the subdirectory to put exported project in
+         subdirectory: build-win-64
+    # Set true to output an artifact zip file
+         package: false
+    # Location of Godot project in repository
+         projectDir: discord-bot
+    # Whether or not to use `--export-debug`
+      - name: Build for Mac OS X
+  # You may pin to the exact commit or the version.
+  # uses: josephbmanley/build-godot-action@5206884b2f984e37d89c07e535590129a29eb182
+        uses: josephbmanley/build-godot-action@v1.4.0
+        with:
+    # Name of the exported binary
+         name: export.zip
+    # Name of the preset in `export_presets.cfg` to use
+         preset: osx
+    # Optional name of the subdirectory to put exported project in
+         subdirectory: build-osx
+    # Set true to output an artifact zip file
+         package: false
+    # Location of Godot project in repository
+         projectDir: discord-bot
+    # Whether or not to use `--export-debug`
+      - name: Build for Android
+  # You may pin to the exact commit or the version.
+  # uses: josephbmanley/build-godot-action@5206884b2f984e37d89c07e535590129a29eb182
+        uses: josephbmanley/build-godot-action@v1.4.0
+        with:
+    # Name of the exported binary
+         name: export.apk
+    # Name of the preset in `export_presets.cfg` to use
+         preset: android
+    # Optional name of the subdirectory to put exported project in
+         subdirectory: build-android
+    # Set true to output an artifact zip file
+         package: false
+    # Location of Godot project in repository
+         projectDir: discord-bot
     # Whether or not to use `--export-debug`
       - name: ZIP Release
         env:
@@ -61,6 +125,10 @@ jobs:
         run: |
           zip -r build-x11-32.zip build/build-x11-32
           zip -r build-x11-64.zip build/build-x11-64
+          zip -r build-win-32.zip build/build-win-32
+          zip -r build-win-64.zip build/build-win-64
+          zip -r build-osx.zip build/build-osx
+          zip -r build-android.zip build/build-android
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
@@ -74,7 +142,7 @@ jobs:
           release_name: Release from ${{ steps.date.outputs.date }}
           draft: false
           prerelease: false
-      - name: Upload Release Asset (linux 32bit)
+      - name: Upload Release Asset (Linux 32-bit)
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -83,7 +151,7 @@ jobs:
           asset_path: ./build-x11-32.zip
           asset_name: build-x11-32.zip
           asset_content_type: application/zip
-      - name: Upload Release Asset (linux 64bit)
+      - name: Upload Release Asset (Linux 64-bit)
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -92,5 +160,39 @@ jobs:
           asset_path: ./build-x11-64.zip
           asset_name: build-x11-64.zip
           asset_content_type: application/zip
-        
-
+      - name: Upload Release Asset (Windows 32-bit)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release-snapshot.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./build-win-32.zip
+          asset_name: build-win-32.zip
+          asset_content_type: application/zip
+      - name: Upload Release Asset (Windows 64-bit)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release-snapshot.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./build-win-64.zip
+          asset_name: build-win-64.zip
+          asset_content_type: application/zip
+      - name: Upload Release Asset (Mac OS X)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release-snapshot.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./build-osx.zip
+          asset_name: build-osx.zip
+          asset_content_type: application/zip
+      - name: Upload Release Asset (Android)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release-snapshot.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./build-android.zip
+          asset_name: build-android.zip
+          asset_content_type: application/zip
