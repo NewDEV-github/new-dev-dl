@@ -103,22 +103,6 @@ jobs:
     # Location of Godot project in repository
          projectDir: discord-bot
     # Whether or not to use `--export-debug`
-      - name: Build for Android
-  # You may pin to the exact commit or the version.
-  # uses: josephbmanley/build-godot-action@5206884b2f984e37d89c07e535590129a29eb182
-        uses: josephbmanley/build-godot-action@v1.4.0
-        with:
-    # Name of the exported binary
-         name: export.apk
-    # Name of the preset in `export_presets.cfg` to use
-         preset: android
-    # Optional name of the subdirectory to put exported project in
-         subdirectory: build-android
-    # Set true to output an artifact zip file
-         package: false
-    # Location of Godot project in repository
-         projectDir: discord-bot
-    # Whether or not to use `--export-debug`
       - name: ZIP Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -128,7 +112,6 @@ jobs:
           zip -r build-win-32.zip build/build-win-32
           zip -r build-win-64.zip build/build-win-64
           zip -r build-osx.zip build/build-osx
-          zip -r build-android.zip build/build-android
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
@@ -186,13 +169,4 @@ jobs:
           upload_url: ${{ steps.release-snapshot.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
           asset_path: ./build-osx.zip
           asset_name: build-osx.zip
-          asset_content_type: application/zip
-      - name: Upload Release Asset (Android)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.release-snapshot.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ./build-android.zip
-          asset_name: build-android.zip
           asset_content_type: application/zip
