@@ -26,3 +26,4 @@ gdscript/warnings/return_value_discarded=false
 [rendering]
 
 quality/driver/driver_name="GLES2"
+vram_compression/import_etc=true
